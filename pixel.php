@@ -6,6 +6,8 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/');
 $dotenv->load();
 
 function sendNotification(string $email) {
+    if ($_SERVER['REMOTE_ADDR'] === $_ENV['BLOCKED_IP'])
+        return ;
     $telegram = new Api($_ENV['BOT_TOKEN']);
     $response = $telegram->sendMessage([
         'chat_id' => $_ENV['CHAT_ID'],
@@ -14,7 +16,7 @@ function sendNotification(string $email) {
 }
 
 $email = isset($_GET['email']) ? $_GET['email'] : 'Unknown recipient';
- 
+
 sendNotification($email);
 
 header('Content-Type: image/png');
